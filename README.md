@@ -7,5 +7,5 @@ Image compression algorithm, developed for research and educational purposes
 ### Sectorization
 TODO
 
-### SORTING
+### Sorting
 TODO
