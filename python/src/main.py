@@ -73,20 +73,33 @@ def occupy(s, mat):
 
 def serialize():
     mat = [[False for y in range(h)] for x in range(w)]
-    escape = False
+    '''escape = False
     x, y = 0, 0
     while not escape:
         s = find(x, y, heavy)
         occupy(s, mat)
         print_matrix(mat)
-        input()
+        input()'''
+    for y in range(0, h):
+        for x in range(0, w):
+            if mat[x][y] == False:
+                s = find(x, y, heavy)
+                occupy(s, mat)
+                heavy.remove(s)
+                #print_matrix(mat)
+                #input()
+                ls = {}
+                ls["x"] = s["x1"] - s["x0"]
+                ls["y"] = s["y1"] - s["y0"]
+                ls["v"] = s["v"]
+                light.append(ls)
     
 
 for x in range(0, w):
     for y in range(0, h):
         raw[x][y] = random.randint(0,100)
-raw[2][5] = 0
-raw[3][5] = 99
+#raw[2][5] = 0
+#raw[3][5] = 99
 
 print_matrix(raw)
 
@@ -99,3 +112,6 @@ for _h in heavy:
 
 # SERIALIZE
 serialize()
+
+for _l in light:
+    print(_l)
