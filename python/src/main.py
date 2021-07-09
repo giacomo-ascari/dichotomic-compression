@@ -71,7 +71,7 @@ def occupy(s, mat):
             mat[x][y] = True
     #return x1+1, y1+1
 
-def serialize():
+def sortnshort():
     mat = [[False for y in range(h)] for x in range(w)]
     '''escape = False
     x, y = 0, 0
@@ -111,7 +111,7 @@ for _h in heavy:
     print(_h)
 
 # SERIALIZE
-serialize()
+sortnshort()
 
 for _l in light:
     print(_l)
