@@ -2,12 +2,10 @@
 Image compression algorithm, developed for research and educational purposes
 
 ## Workflow
+This workflow doesn't have to implemented strictly: depending on the implementation, some steps can be (or must be) integrated with one another.
 ![workflow](docs/workflow.png)
 
-### Sectorization
-TODO
-
-### Sorting
+## Sectorization
 TODO
 
 ## .DCI format
@@ -28,6 +26,6 @@ DCI (dichotmic compression image) is the format chosen to store the compressed i
   - RGB stored as 3 bytes, one for each color channel
   - Final sector "weight": 5 bytes
 - Version 2 (to be implemented in C)
-  - Size/position composed of the index of sectorizations done before getting to the sector itself (7 bits)
-  - RGB stores as 3 7-bits channels
-  - Final sector "weight": 3.5 bytes (28 bit)
+  - Size/position composed of the index of sectorizations done before getting to the sector itself (1 byte)
+  - RGB stores as 3 1-byte channels
+  - Final sector "weight": 4 bytes (32 bits)
