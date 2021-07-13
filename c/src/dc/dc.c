@@ -9,8 +9,7 @@
 
 // COMPRESS
 // unpack
-// sectorize
-// sort (done with smart sectorize)
+// sectorize+sort
 // serialize
 
 // DECOMPRESS
@@ -183,21 +182,26 @@ void _dc_serialize(dc_compression *cp) {
 }
 
 void dc_compress(unsigned char *input, unsigned char *output, unsigned char thr, int verbose) {
+    if (verbose) printf("[ %s | %s]\n", input, output);
     if (verbose) printf("COMPRESS (thr: %d)\n", thr);
     dc_compression *cp = _dc_compression_init(input, output, thr, verbose);
     if (verbose) printf("\tUNPACK... ");
-    if (verbose) fflush(stdin);
+    if (verbose) fflush(stdout);
     _dc_unpack(cp);
     if (verbose) printf("\tDONE (%dx%d)\n", cp->pixel_matrix->width, cp->pixel_matrix->height);
+
     if (verbose) printf("\tSECTORIZE... ");
-    if (verbose) fflush(stdin);
+    if (verbose) fflush(stdout);
     _dc_sectorize(cp, (dc_corners){0, 0, cp->pixel_matrix->width, cp->pixel_matrix->height}, 0);
     size_t count = 0;
     if (verbose) for (size_t i = 0; i < cp->pixel_matrix->width * cp->pixel_matrix->height; i++) count += cp->h_sectors[i] ? 1 : 0;
     if (verbose) printf("\tDONE (%ld sectors)\n", count);
+
     if (verbose) printf("\tSERIALIZE... ");
+    if (verbose) fflush(stdout);
     _dc_serialize(cp);
     if (verbose) printf("\tDONE\n");
+
     _dc_compression_destroy(cp);
     if (verbose) printf("FINISHED\n");
 }
@@ -265,7 +269,6 @@ void _dc_deserialize(dc_decompression *dp) {
         fprintf(stderr, "Missing width and height\n");
         exit(1);
     }
-    printf("%d %d   %d %d", version, thr, w, h);
     if (version != 2) {
         fprintf(stderr, "Version not supported\n");
         exit(1);
@@ -309,7 +312,7 @@ void _dc_render(dc_decompression *dp) {
     dc_light_sector *lp, *temp;
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
-            if (!mat[ix(x, y, w)] && dp->l_sector) {
+            if (mat[ix(x, y, w)] == 0 && dp->l_sector) {
                 lp = dp->l_sector;
                 cor.x0 = 0; cor.y0 = 0;
                 cor.x1 = w; cor.y1 = h;
@@ -318,12 +321,12 @@ void _dc_render(dc_decompression *dp) {
                     dy = cor.y1 - cor.y0;
                     if (dx > dy) {
                         mid = _dc_get_mid(cor.x0, cor.x1);
-                        if (x > mid) cor.x0 = mid;
-                        else cor.x1 = mid;
+                        if (mid > x) cor.x1 = mid;
+                        else cor.x0 = mid;
                     } else {
                         mid = _dc_get_mid(cor.y0, cor.y1);
-                        if (y > mid) cor.y0 = mid;
-                        else cor.y1 = mid;
+                        if (mid > y) cor.y1 = mid;
+                        else cor.y0 = mid;
                     }
                 }
                 _dc_draw_n_occupy(dp, &cor, mat, lp);
@@ -339,10 +342,6 @@ void _dc_render(dc_decompression *dp) {
             }
         }
     }
-    /*while (lp) {
-        _dc_print_light_sector(lp);
-        lp = lp->next;
-    }*/
 }
 
 void _dc_pack(dc_decompression *dp) {
@@ -356,7 +355,6 @@ void _dc_pack(dc_decompression *dp) {
             data[i++] = pp->r;
             data[i++] = pp->g;
             data[i++] = pp->b;
-            //printf("%d", pp->r);
         }
     }
     stbi_write_bmp(dp->output, w, h, 3, data);
@@ -364,21 +362,21 @@ void _dc_pack(dc_decompression *dp) {
 }
 
 void dc_decompress(unsigned char *input, unsigned char *output, int verbose) {
+    if (verbose) printf("[ %s | %s]\n", input, output);
     if (verbose) printf("DECOMPRESS\n");
     dc_decompression *dp = _dc_decompression_init(input, output, verbose);
-
     if (verbose) printf("\tDESERIALIZE... ");
-    if (verbose) fflush(stdin);
+    if (verbose) fflush(stdout);
     _dc_deserialize(dp);
     if (verbose) printf("\tDONE\n");
 
     if (verbose) printf("\tRENDER... ");
-    if (verbose) fflush(stdin);
+    if (verbose) fflush(stdout);
     _dc_render(dp);
     if (verbose) printf("\tDONE\n");
 
     if (verbose) printf("\tPACK... ");
-    if (verbose) fflush(stdin);
+    if (verbose) fflush(stdout);
     _dc_pack(dp);
     if (verbose) printf("\tDONE\n");
     
