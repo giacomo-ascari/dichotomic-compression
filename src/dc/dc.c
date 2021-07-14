@@ -5,8 +5,6 @@
 #include "stb/stb_image.h"
 #include "stb/stb_image_write.h"
 
-#define V 2
-
 // COMPRESS
 // unpack
 // sectorize+sort
@@ -164,7 +162,7 @@ void _dc_serialize(dc_compression *cp) {
         fprintf(stderr, "Cannot save file\n");
         exit(1);
     }
-    fprintf(file, "%c%c", V, cp->thr);
+    fprintf(file, "%c%c", 1, cp->thr);
     int w = cp->pixel_matrix->width;
     int h = cp->pixel_matrix->height;
     unsigned char b[4];
@@ -269,7 +267,7 @@ void _dc_deserialize(dc_decompression *dp) {
         fprintf(stderr, "Missing width and height\n");
         exit(1);
     }
-    if (version != 2) {
+    if (version != 1) {
         fprintf(stderr, "Version not supported\n");
         exit(1);
     }

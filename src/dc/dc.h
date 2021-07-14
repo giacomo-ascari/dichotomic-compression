@@ -2,8 +2,6 @@
 #define _DC_H
 
 #include <stdio.h>
-#include <math.h>
-#include <time.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>

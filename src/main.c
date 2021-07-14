@@ -2,8 +2,8 @@
 #include <string.h>
 #define N 200
 
-// ./dc_core -c -f ../../examples/vaporwave.jpg -t 30 -v
-// ./dc_core -d -f ../../examples/vaporwave.jpg.dci -v
+// ./dc_core -c -f ../examples/vaporwave.jpg -t 30 -v
+// ./dc_core -d -f ../examples/vaporwave.jpg.dci -v
 
 int ends_with(const char *str, const char *suffix)
 {
