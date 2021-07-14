@@ -1,10 +1,8 @@
-# dichotomic-compression
+# Dichotomic Compression
 Image compression algorithm, developed for research and educational purposes
 
 ## Overview
-The dichotomic compression aims to minimize the size of a raster image by dinamically reducing the resolution:
-- joining regions of pixels with similar color (under a specified threshold) in a "sector"
-- creating a list of sectors with the least amount of information necessary
+The dichotomic compression aims to minimize the size of a raster image by dinamically reducing the resolution. It is done by aggregating regions of homogeneous pixels into a single sector. The similarity of the region is regulated by the threshold value (in a range between 0-255).
 
 ## Workflow
 This workflow doesn't have to implemented strictly: depending on the implementation, some steps can be (or must be) integrated with one another.
@@ -12,7 +10,8 @@ This workflow doesn't have to implemented strictly: depending on the implementat
 ![workflow](docs/workflow.png)
 
 ## Sectorization
-TODO
+It's the core of the whole process. It's implemented in a recursive function that operates on the pixel matrix. The sectors, when found, are added to a proper list. 
+![workflow](docs/sectorization.png)
 
 ## .DCI format
 DCI (dichotmic compression image) is the format chosen to store the compressed image.
