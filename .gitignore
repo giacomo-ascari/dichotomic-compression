@@ -1,3 +1,4 @@
+bin/dc_core
 *.out
 *.dci
 *.bmp

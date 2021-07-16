@@ -5,16 +5,14 @@
 // ./dc_core -c -f ../examples/vaporwave.jpg -t 30 -v
 // ./dc_core -d -f ../examples/vaporwave.jpg.dci -v
 
-int ends_with(const char *str, const char *suffix)
-{
-    if (!str || !suffix)
-        return 0;
-    size_t lenstr = strlen(str);
-    size_t lensuffix = strlen(suffix);
-    if (lensuffix >  lenstr)
-        return 0;
-    return strncmp(str + lenstr - lensuffix, suffix, lensuffix) == 0;
-}
+char * error = "Error. Use 'dc_core -h' to check correct usage.\n";
+char * help =
+" Usage: dc_core -c|-d FILENAME [-t THRESHOLD] [-v] [-h] \n\
+\t-c FILENAME: compress image to a DCI file (exclusive with -d) \n\
+\t-d FILENAME: decompress a DCI image to a bitmap image (exclusive with -c) \n\
+\t-t THRESHOLD: override default threshold (only for compression) in range [0-255] \n\
+\t-v: show verbose execution \n\
+\t-h: show this help panel \n";
 
 int main(int argc, char**argv) {
 
@@ -29,15 +27,16 @@ int main(int argc, char**argv) {
 
     // ARGUMENT READING
     int opt = 0;
-    while ((opt = getopt(argc, argv, "cdvf:t:")) != -1) { 
+    while ((opt = getopt(argc, argv, "hcdvf:t:")) != -1) { 
         switch (opt) {
+            case 'h': printf("%s", help); exit(0);
             case 'c': mode = 'c'; break;
             case 'd': mode = 'd'; break;
             case 'v': verbose = 1; break;
             case 'f': strcpy(file, optarg); break;
             case 't': thr = (unsigned char)strtol(optarg, (char **)NULL, 10); break;
             default:
-                fprintf(stderr, "Error\n");
+                fprintf(stderr, "%s", error);
                 exit(1);
         }
     }
@@ -47,7 +46,7 @@ int main(int argc, char**argv) {
         || strlen(file) == 0
         || mode == 0
         ) {
-        fprintf(stderr, "Error\n");
+        fprintf(stderr, "%s", error);
         exit(1);
     }
 
