@@ -4,6 +4,11 @@ Image compression algorithm, developed for research and educational purposes.
 ## Overview
 The dichotomic compression aims to minimize the size of a raster image by dinamically reducing the resolution. It is done by aggregating regions of homogeneous pixels into a single sector. The similarity of the region is regulated by the threshold value (in a range between 0-255).
 
+What emerged from early experiments, is that we can see that the algorithm is best when compressing drawings, sketches, signs or car plates. It prioritizes high contrast details, such as lines, dots and texts.
+![animation](docs/examples.gif)
+
+<i>This examples shows the compressed file size, compared to the original. Custom thresholds have been used.</i>
+
 ## Workflow
 This workflow doesn't have to implemented strictly: depending on the implementation, some steps can be (or must be) integrated with one another.
 
@@ -12,7 +17,7 @@ This workflow doesn't have to implemented strictly: depending on the implementat
 ## Sectorization
 It's the core of the whole process. It's implemented in a recursive function that operates on the pixel matrix. The sectors, when found, are added to a proper list.
 The "delta" is a 3-dimensional array, representing the absolute difference between channels of each pixel inside a sector. This mean that "details" (anything that will be preserved as a near original resolution) are usually high contrast regions.
-![workflow](docs/sectorization.png)
+![sectorization](docs/sectorization.png)
 
 ## .DCI format
 DCI (dichotmic compression image) is the format chosen to store the compressed image.
