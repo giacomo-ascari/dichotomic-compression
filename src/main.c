@@ -7,12 +7,13 @@
 
 char * error = "Error. Use 'dc_core -h' to check correct usage.\n";
 char * help =
-" Usage: dc_core -c|-d FILENAME [-t THRESHOLD] [-v] [-h] \n\
-\t-c FILENAME: compress image to a DCI file (exclusive with -d) \n\
-\t-d FILENAME: decompress a DCI image to a bitmap image (exclusive with -c) \n\
-\t-t THRESHOLD: override default threshold (only for compression) in range [0-255] \n\
-\t-v: show verbose execution \n\
-\t-h: show this help panel \n";
+" Usage: dc_core -c|-d -f FILENAME [-t THRESHOLD] [-v] [-h] \n\
+\t-c: sets to compression mode, image file --> DCI file (exclusive with -d) \n\
+\t-d: sets to decompression mode, DCI image --> bitmap image (exclusive with -c) \n\
+\t-f FILENAME: specifies the input filename \n\
+\t-t THRESHOLD: overrides default threshold (only in compr. mode) in range [0-255] \n\
+\t-v: shows verbose execution \n\
+\t-h: shows this help panel \n";
 
 int main(int argc, char**argv) {
 

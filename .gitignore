@@ -1,4 +1,4 @@
-bin/dc_core
 *.out
 *.dci
 *.bmp
+bin/dc_core
