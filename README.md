@@ -7,7 +7,7 @@ The dichotomic compression aims to minimize the size of a raster image by dinami
 What emerged from early experiments, is that we can see that the algorithm is best when compressing drawings, sketches, signs or car plates. It prioritizes high contrast details, such as lines, dots and texts.
 ![animation](docs/examples.gif)
 
-<i>This examples shows the compressed file size, compared to the original. Custom thresholds have been used.</i>
+<i>These examples show the compressed file size compared to the original. Custom thresholds have been used.</i>
 
 ## Workflow
 This workflow doesn't have to implemented strictly: depending on the implementation, some steps can be (or must be) integrated with one another.
