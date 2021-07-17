@@ -134,13 +134,13 @@ void _dc_sectorize(dc_compression *cp, dc_corners cor, int splits) {
     dc_corners temp = {0, 0, 0, 0};
     if (area > 1 && delta > cp->thr) {
         splits++;
-        if (dx > dy) { //vertical split
+        if (dx > dy) {
             mid = _dc_get_mid(cor.x0, cor.x1);
             temp = (dc_corners){cor.x0, cor.y0, mid, cor.y1};
             _dc_sectorize(cp, temp, splits);
             temp = (dc_corners){mid, cor.y0, cor.x1, cor.y1};
             _dc_sectorize(cp, temp, splits);
-        } else { //horizontal split
+        } else {
             mid = _dc_get_mid(cor.y0, cor.y1);
             temp = (dc_corners){cor.x0, cor.y0, cor.x1, mid};
             _dc_sectorize(cp, temp, splits);
@@ -248,9 +248,10 @@ void _dc_deserialize(dc_decompression *dp) {
         fprintf(stderr, "Cannot open file\n");
         exit(1);
     }
-    unsigned char version, thr, b[8];
-    int w, h, readable;
+    unsigned char version, thr, b[8], buffer[1024];
+    int w, h, readable, count = 0;
     uint32_t _w, _h;
+    size_t i;
     if (read(fd, b, 2) == 2) {
         version = b[0];
         thr = b[1];
@@ -271,22 +272,26 @@ void _dc_deserialize(dc_decompression *dp) {
         fprintf(stderr, "Version not supported\n");
         exit(1);
     }
-    while (readable = read(fd, b, 4)) {
-        if (readable == 4) {
-            dc_light_sector *lp = malloc(sizeof(dc_light_sector));
-            lp->pix.r = b[1];
-            lp->pix.g = b[2];
-            lp->pix.b = b[3];
-            lp->splits = b[0];
-            if (dp->l_sector) {
-                lp->next = NULL;
-                lp->prev = dp->l_sector->prev;
-                dp->l_sector->prev->next = lp;
-                dp->l_sector->prev = lp;
-            } else {
-                lp->next = NULL;
-                lp->prev = lp;
-                dp->l_sector = lp;
+    while (readable = read(fd, buffer, 1024)) {
+        if (readable % 4 == 0) {
+            count += readable;
+            i = 0;
+            while(i < readable) {
+                dc_light_sector *lp = malloc(sizeof(dc_light_sector));
+                lp->splits = buffer[i++];
+                lp->pix.r = buffer[i++];
+                lp->pix.g = buffer[i++];
+                lp->pix.b = buffer[i++];
+                if (dp->l_sector) {
+                    lp->next = NULL;
+                    lp->prev = dp->l_sector->prev;
+                    dp->l_sector->prev->next = lp;
+                    dp->l_sector->prev = lp;
+                } else {
+                    lp->next = NULL;
+                    lp->prev = lp;
+                    dp->l_sector = lp;
+                }
             }
         } else {
             fprintf(stderr, "Corrupted sectors\n");
