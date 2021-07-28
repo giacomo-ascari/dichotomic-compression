@@ -180,28 +180,31 @@ void _dc_serialize(dc_compression *cp) {
 }
 
 void dc_compress(unsigned char *input, unsigned char *output, unsigned char thr, int verbose) {
-    if (verbose) printf("[ %s | %s]\n", input, output);
-    if (verbose) printf("COMPRESS (thr: %d)\n", thr);
+
+    if (verbose) printf("[COMPRESS] Input:%s\n", input);
+    if (verbose) printf("[COMPRESS] Output:%s\n", output);
+    if (verbose) printf("[COMPRESS] Thr:%d\n", thr);
     dc_compression *cp = _dc_compression_init(input, output, thr, verbose);
-    if (verbose) printf("\tUNPACK... ");
+
+    if (verbose) printf("[COMPRESS] Unpack... ");
     if (verbose) fflush(stdout);
     _dc_unpack(cp);
-    if (verbose) printf("\tDONE (%dx%d)\n", cp->pixel_matrix->width, cp->pixel_matrix->height);
+    if (verbose) printf("DONE (%dx%d)\n", cp->pixel_matrix->width, cp->pixel_matrix->height);
 
-    if (verbose) printf("\tSECTORIZE... ");
+    if (verbose) printf("[COMPRESS] Sectorize... ");
     if (verbose) fflush(stdout);
     _dc_sectorize(cp, (dc_corners){0, 0, cp->pixel_matrix->width, cp->pixel_matrix->height}, 0);
     size_t count = 0;
     if (verbose) for (size_t i = 0; i < cp->pixel_matrix->width * cp->pixel_matrix->height; i++) count += cp->h_sectors[i] ? 1 : 0;
-    if (verbose) printf("\tDONE (%ld sectors)\n", count);
+    if (verbose) printf("DONE (%ld sectors)\n", count);
 
-    if (verbose) printf("\tSERIALIZE... ");
+    if (verbose) printf("[COMPRESS] Serialize... ");
     if (verbose) fflush(stdout);
     _dc_serialize(cp);
-    if (verbose) printf("\tDONE\n");
+    if (verbose) printf("DONE (%ld KB)\n", (count * 4 + 10) / 1000);
 
     _dc_compression_destroy(cp);
-    if (verbose) printf("FINISHED\n");
+    if (verbose) printf("[COMPRESS] Finished\n");
 }
 
 dc_decompression *_dc_decompression_init(unsigned char *input, unsigned char *output, int verbose) {
@@ -360,30 +363,35 @@ void _dc_pack(dc_decompression *dp) {
             data[i++] = pp->b;
         }
     }
-    stbi_write_bmp(dp->output, w, h, 3, data);
+    stbi_write_png(dp->output, w, h, 3, data, 0); // todo: see why it takes so long
     stbi_image_free(data);
 }
 
 void dc_decompress(unsigned char *input, unsigned char *output, int verbose) {
-    if (verbose) printf("[ %s | %s]\n", input, output);
-    if (verbose) printf("DECOMPRESS\n");
+    if (verbose) printf("[DECOMPRESS] Input:%s\n", input);
+    if (verbose) printf("[DECOMPRESS] Output:%s\n", output);
     dc_decompression *dp = _dc_decompression_init(input, output, verbose);
-    if (verbose) printf("\tDESERIALIZE... ");
+
+    if (verbose) printf("[DECOMPRESS] Deserialize... ");
     if (verbose) fflush(stdout);
     _dc_deserialize(dp);
-    if (verbose) printf("\tDONE\n");
+    size_t count = 0;
+    dc_light_sector *temp = dp->l_sector;
+    if (verbose) while(temp) {count++; temp = temp->next; };
+    //if (verbose) printf("DONE (%ld sectors)\n", count);
+    if (verbose) printf("DONE (%ld KB)\n", (count * 4 + 10) / 1000);
 
-    if (verbose) printf("\tRENDER... ");
+    if (verbose) printf("[DECOMPRESS] Render... ");
     if (verbose) fflush(stdout);
     _dc_render(dp);
-    if (verbose) printf("\tDONE\n");
+    if (verbose) printf("DONE (%ld sectors)\n", count);
 
-    if (verbose) printf("\tPACK... ");
+    if (verbose) printf("[DECOMPRESS] Pack... ");
     if (verbose) fflush(stdout);
     _dc_pack(dp);
-    if (verbose) printf("\tDONE\n");
+    if (verbose) printf("DONE (%dx%d)\n", dp->pixel_matrix->width, dp->pixel_matrix->height);
     
     _dc_decompression_destroy(dp);
-    if (verbose) printf("FINISHED\n");
+    if (verbose) printf("[DECOMPRESS] Finished\n");
 
 }

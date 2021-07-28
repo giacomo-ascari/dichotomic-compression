@@ -1,4 +1,3 @@
 *.out
-*.dci
-*.bmp
+*.dci*
 bin/dc_core

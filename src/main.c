@@ -24,7 +24,7 @@ int main(int argc, char**argv) {
     int verbose = 0;
 
     char *c_ext = ".dci";
-    char *d_ext = ".bmp";
+    char *d_ext = ".png";
 
     // ARGUMENT READING
     int opt = 0;
