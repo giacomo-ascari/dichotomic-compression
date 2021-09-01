@@ -1,3 +1,4 @@
+FILE=hubble.jpg &&
 ./compile.sh &&
-./dc_core -c -f ../examples/sign.jpg -t 100 -v &&
-./dc_core -d -f ../examples/sign.jpg.dci -v
+./dc_core -c -f ../examples/$FILE -t 63 -v &&
+./dc_core -d -f ../examples/$FILE.dci -v
