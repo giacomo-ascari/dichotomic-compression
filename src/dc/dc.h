@@ -38,6 +38,7 @@ typedef struct _dc_light_sector {
 
 typedef struct _dc_compression {
     int verbose;
+    size_t input_filesize;
     unsigned char *input;
     unsigned char *output;
     unsigned char thr;

@@ -49,6 +49,7 @@ dc_compression *_dc_compression_init(unsigned char *input, unsigned char *output
     cp->input = input;
     cp->output = output;
     cp->thr = thr;
+    cp->input_filesize = 0;
     cp->pixel_matrix = malloc(sizeof(dc_pixel_matrix));
     cp->pixel_matrix->width = 0;
     cp->pixel_matrix->height = 0;
@@ -110,6 +111,12 @@ void _dc_unpack(dc_compression *cp) {
     if (!data) {
         fprintf(stderr, "Cannot open file\n");
         exit(1);
+    } else {
+        FILE *fp = fopen(cp->input, "rb");
+        fseek(fp, 0, SEEK_END);
+        cp->input_filesize = ftell(fp);
+        rewind(fp);
+        fclose(fp);
     }
     cp->pixel_matrix->width = width;
     cp->pixel_matrix->height = height;
@@ -189,7 +196,7 @@ void dc_compress(unsigned char *input, unsigned char *output, unsigned char thr,
     if (verbose) printf("[COMPRESS] Unpack... ");
     if (verbose) fflush(stdout);
     _dc_unpack(cp);
-    if (verbose) printf("DONE (%dx%d)\n", cp->pixel_matrix->width, cp->pixel_matrix->height);
+    if (verbose) printf("DONE (%dx%d, %ldKB)\n", cp->pixel_matrix->width, cp->pixel_matrix->height, cp->input_filesize/1000);
 
     if (verbose) printf("[COMPRESS] Sectorize... ");
     if (verbose) fflush(stdout);
@@ -201,10 +208,14 @@ void dc_compress(unsigned char *input, unsigned char *output, unsigned char thr,
     if (verbose) printf("[COMPRESS] Serialize... ");
     if (verbose) fflush(stdout);
     _dc_serialize(cp);
-    if (verbose) printf("DONE (%ld KB)\n", (count * 4 + 10) / 1000);
+    size_t filesize;
+    if (verbose) filesize = count * 4 + 10;
+    if (verbose) printf("DONE (%ld KB)\n", filesize / 1000);
 
+    size_t comp_ratio;
+    if (verbose) comp_ratio = filesize * 100 / cp->input_filesize;
+    if (verbose) printf("[COMPRESS] Finished (CR %ld%%)\n", comp_ratio);
     _dc_compression_destroy(cp);
-    if (verbose) printf("[COMPRESS] Finished\n");
 }
 
 dc_decompression *_dc_decompression_init(unsigned char *input, unsigned char *output, int verbose) {
