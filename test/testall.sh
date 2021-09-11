@@ -4,28 +4,25 @@ timestamp() {
   date +"%s"
 }
 
-
-../bin/compile.sh
 FOLDER="log/$(timestamp)"
 echo $FOLDER
+#echo $PWD
+../bin/compile.sh
+rm -r tmp
 mkdir tmp
 mkdir log
 mkdir $FOLDER
-
-THRS={ 40 50 }
-for THR in THRS
+THRS=( 40 50 60 )
+for THR in "${THRS[@]}"
 do
   echo $THR
   mkdir $FOLDER/$THR
-
-  cp -r "../examples" tmp
-
-  for IMAGE in "tmp/*"
+  cp ../examples/* tmp
+  for IMAGE in tmp/*
   do
+    echo $IMAGE
     ./test.sh $IMAGE $THR
   done
-
-  cp -r tmp $FOLDER/$THR
-  rm -r tmp
-
+  cp tmp/* $FOLDER/$THR
+  rm tmp/*
 done
