@@ -1,6 +1,6 @@
 *.out
 *.dci*
-bin/dc_core
+bin/dc_core*
 test/tmp
 test/log
 .env
