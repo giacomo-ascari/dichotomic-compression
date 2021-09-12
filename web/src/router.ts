@@ -41,6 +41,23 @@ router.use(info_pl);
 router.use(info);
 router.use(track);*/
 
+router.post("/compress", async (req: express.Request, res: express.Response) => {
+    log("worker", "compress (POST)", "d");
+    let path = `temp`;
+    let data = Buffer.alloc(0);
+    try {
+        req.on('data', (chunk) => {
+            data = Buffer.concat([data, chunk]);
+        });
+        req.on('end', async () => {
+            fs.writeFileSync(path, data, "binary");
+            res.status(200).send('OK');
+        });
+    } catch {
+        res.status(500).send("something");
+    }
+});
+
 router.use("", express.static("public"));
 
 export default router;

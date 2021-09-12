@@ -32,7 +32,7 @@
     <script type="text/javascript" src="script.js"></script>   
 
   </head>
-  <body class="py-4">
+  <body class="py-4" onload="update_thr(63); update_button_compression()">
     
 <main>
   <div class="container">
@@ -43,10 +43,14 @@
     <a href="https://github.com/giacomo-ascari/dichotomic-compression">Git Repository</a>
     
     <h2 class="mt-4">Compress image</h2>
-    <p>Uploade an image [.png, .jpg, .bmp...], select a THRESHOLD value and download the result.</p>
+    <p>Uploade an image [.png, .jpg, .bmp...], select a threshold value and download the result.</p>
     <div class="container themed-container">
       <form>
-        
+          <input type="file" class="form-control" id="file_compression" oninput="update_button_compression()"><br>
+          <label class="form-label">Threshold [0-255]:</label>
+          <input type="number" class="form-control" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="number_thr">
+          <input type="range" class="form-range" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="range_thr">
+          <button type="button" class="btn btn-primary" onclick="compress()" id="button_compression">Compress</button>
       </form>
     </div>
 
