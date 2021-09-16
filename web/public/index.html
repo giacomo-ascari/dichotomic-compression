@@ -32,7 +32,7 @@
     <script type="text/javascript" src="script.js"></script>   
 
   </head>
-  <body class="py-4" onload="update_thr(63); update_button_compression()">
+  <body class="py-4" onload="update_thr(63); update_button_compression(); update_button_decompression()">
     
 <main>
   <div class="container">
@@ -60,7 +60,8 @@
     <p>Uploade an image [.dci] and download the result.</p>
     <div class="container themed-container">
       <form>
-        
+        <input type="file" class="form-control" id="file_decompression" oninput="update_button_decompression()"><br>
+        <button type="button" class="btn btn-primary" onclick="decompress()" id="button_decompression">Decompress</button>
       </form>
     </div>
 

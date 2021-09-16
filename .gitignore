@@ -6,3 +6,5 @@ test/log
 .env
 web/js
 web/node_modules
+web/temp
+*.tmp
