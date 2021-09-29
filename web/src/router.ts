@@ -97,10 +97,14 @@ router.post("/compress", async (req: express.Request, res: express.Response) => 
     let bin = process.env.BIN as unknown as string;
     let thr = req.query["thr"] ? req.query["thr"] as unknown as string : "63";
     try {
-        let filename = await receive(dir, req, res);
-        let path = `${dir}/${filename}`;
+        let input = await receive(dir, req, res);
+        let path = `${dir}/${input}`;
         let proc = child.execFileSync(bin, ["-c", "-f", path, "-t", thr]);
-        let result = `${filename}.dci`
+        let output = `${input}.dci`;
+        let result = {
+            fn: output,
+            cr: child.execFileSync("./get-cr.sh", [`${dir}/${output}`, path]).toString()
+        }
         res.status(200).send(result);
     } catch(e) {
         log("worker", `error\n\t${e}`, "e");

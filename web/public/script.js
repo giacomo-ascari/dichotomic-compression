@@ -1,6 +1,6 @@
 let queue = [];
-let base_url = "https://asky.hopto.org/dc";
-//let base_url = "http://localhost:2608/dc"; // `
+//let base_url = "https://asky.hopto.org/dc";
+let base_url = "http://localhost:2608/dc"; // `
 
 function update_thr(value) {
     let number_thr = document.getElementById("number_thr");
@@ -44,12 +44,15 @@ function compress() {
     let number_thr = document.getElementById("number_thr");
     let file_compression = document.getElementById("file_compression");
     let button = document.getElementById("button_compression");
+    let label = document.getElementById("label_cr");
     button.disabled = true;
     let xhr = new XMLHttpRequest();
     xhr.open("POST", `${base_url}/compress?thr=${number_thr.value}`, true);
     xhr.onload = (e) => {
         if (xhr.status == 200) {
-            download(xhr.response);
+            let res = JSON.parse(xhr.response);
+            label.innerHTML = res.cr;
+            download(res.fn);
         } else {
             alert("Error!\n" + xhr.response);
         }

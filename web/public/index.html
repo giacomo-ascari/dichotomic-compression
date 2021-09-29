@@ -51,6 +51,9 @@
           <input type="number" class="form-control" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="number_thr">
           <input type="range" class="form-range" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="range_thr">
           <button type="button" class="btn btn-primary" onclick="compress()" id="button_compression">Compress</button>
+          <label class="form-label">Compression rate:</label>
+          <label class="form-label" id="label_cr">...</label>
+          <label class="form-label">%</label>
       </form>
     </div>
 
