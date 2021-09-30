@@ -1,6 +1,6 @@
 let queue = [];
-//let base_url = "https://asky.hopto.org/dc";
-let base_url = "http://localhost:2608/dc"; // `
+let base_url = "https://asky.hopto.org/dc";
+//let base_url = "http://localhost:2608/dc"; // `
 
 function update_thr(value) {
     let number_thr = document.getElementById("number_thr");
