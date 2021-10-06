@@ -1,6 +1,8 @@
 let queue = [];
-let base_url = "https://asky.hopto.org/dc";
-//let base_url = "http://localhost:2608/dc"; // `
+
+function base_url() {
+    return `${window.location.origin}/dc`;
+}
 
 function update_thr(value) {
     let number_thr = document.getElementById("number_thr");
@@ -28,7 +30,7 @@ function update_button_decompression() {
 }
 
 function download(filename) {
-    let url = new URL(`${base_url}/retrieve?fn=${filename}`);
+    let url = new URL(`${base_url()}/retrieve?fn=${filename}`);
     var element = document.createElement('a');
     element.style.display = 'none';
     element.href = url;
@@ -47,7 +49,7 @@ function compress() {
     let label = document.getElementById("label_cr");
     button.disabled = true;
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", `${base_url}/compress?thr=${number_thr.value}`, true);
+    xhr.open("POST", `${base_url()}/compress?thr=${number_thr.value}`, true);
     xhr.onload = (e) => {
         if (xhr.status == 200) {
             let res = JSON.parse(xhr.response);
@@ -69,7 +71,7 @@ function decompress() {
     let button = document.getElementById("button_decompression")
     button.disabled = true;
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", `${base_url}/decompress`, true);
+    xhr.open("POST", `${base_url()}/decompress`, true);
     xhr.onload = (e) => {
         if (xhr.status == 200) {
             download(xhr.response);

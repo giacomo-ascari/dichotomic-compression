@@ -20,7 +20,7 @@ async function main() {
         log("master", `time: ${date}`, "s");
         log("master", `pid: ${process.pid}`, "s");
         log("master", `worker count: ${workers_count}`, "s");
-        log("master", `http://localhost:${process.env.PORT}${process.env.BASE_URL}`, "s");
+        log("master", `http://localhost:${process.env.PORT || 80}${process.env.BASE_URL}`, "s");
     
         // EVENT HANDLING OF THE WORKER
         cluster.on('fork', (worker) => {
@@ -52,7 +52,7 @@ async function main() {
         app.use(process.env.BASE_URL as unknown as string, router as express.Router);
     
         let server: http.Server = http.createServer(app)
-        server.listen(process.env.PORT)
+        server.listen(process.env.PORT || 80)
     }
 }
 
