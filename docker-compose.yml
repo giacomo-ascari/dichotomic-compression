@@ -1,0 +1,12 @@
+version: "3.3"
+services:
+  dc-core:
+    build: .
+    image: "dc-core:latest"
+  dc-web:
+    build: "web"
+    image: "dc-web:latest"
+    ports:
+      - "27001:80"
+    tmpfs:
+      - "/usr/temp"
