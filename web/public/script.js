@@ -29,7 +29,13 @@ function update_button_decompression() {
     button_decompression.disabled = !(file_decompression.value);
 }
 
-function download(filename) {
+function download(node) {
+    let filename;
+    node.parentNode.childNodes.forEach(elem => {
+        if (elem.tagName && elem.tagName == "LABEL") {
+            filename = elem.textContent;
+        }
+    })
     let url = new URL(`${base_url()}/retrieve?fn=${filename}`);
     var element = document.createElement('a');
     element.style.display = 'none';
@@ -41,20 +47,32 @@ function download(filename) {
     document.body.removeChild(element);
 }
 
+function add_dyn(res, mode) {
+    let dyn_cr = document.getElementById(`dyn_${mode}`);
+    let template = document.getElementById(`dyn_${mode}_template`);
+    let clone = template.cloneNode(true);
+    clone.id = undefined;
+    clone.style = "display;";
+    clone.childNodes.forEach(element => {
+        if (element.textContent && element.tagName != "BUTTON") {
+            element.textContent = res[element.textContent];
+        }
+    })
+    dyn_cr.insertBefore(clone, dyn_cr.firstChild);
+}
+
 
 function compress() {
     let number_thr = document.getElementById("number_thr");
     let file_compression = document.getElementById("file_compression");
     let button = document.getElementById("button_compression");
-    let label = document.getElementById("label_cr");
     button.disabled = true;
     let xhr = new XMLHttpRequest();
     xhr.open("POST", `${base_url()}/compress?thr=${number_thr.value}`, true);
     xhr.onload = (e) => {
         if (xhr.status == 200) {
             let res = JSON.parse(xhr.response);
-            label.innerHTML = res.cr;
-            download(res.fn);
+            add_dyn(res, "cr");
         } else {
             alert("Error!\n" + xhr.response);
         }
@@ -74,7 +92,8 @@ function decompress() {
     xhr.open("POST", `${base_url()}/decompress`, true);
     xhr.onload = (e) => {
         if (xhr.status == 200) {
-            download(xhr.response);
+            let res = JSON.parse(xhr.response);
+            add_dyn(res, "dr");
         } else {
             alert("Error!\n" + xhr.response);
         }

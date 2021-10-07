@@ -12,3 +12,10 @@ background-color: rgba(0, 123, 255, .15);
 border: 1px solid rgba(0, 123, 255, .2);
 }
 
+.code-container {
+    white-space: pre-wrap;
+    padding: .75rem;
+    background-color: #ddd;
+    border: 1px solid #bbb;
+    font-family: courier, monospace;
+}

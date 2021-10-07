@@ -42,31 +42,46 @@
     <p>In these page you can freely experiment with dichotomic-compression API, accessible everywhere and freely</p>
     <a href="https://github.com/giacomo-ascari/dichotomic-compression">Git Repository</a>
     
-    <h2 class="mt-4">Compress image</h2>
-    <p>Uploade an image [.png, .jpg, .bmp...], select a threshold value and download the result.</p>
-    <div class="container themed-container">
-      <form>
-          <input type="file" class="form-control" id="file_compression" oninput="update_button_compression()"><br>
-          <label class="form-label">Threshold [0-255]:</label>
-          <input type="number" class="form-control" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="number_thr">
-          <input type="range" class="form-range" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="range_thr">
-          <button type="button" class="btn btn-primary" onclick="compress()" id="button_compression">Compress</button>
-          <label class="form-label">Compression rate:</label>
-          <label class="form-label" id="label_cr">...</label>
-          <label class="form-label">%</label>
-      </form>
+    <div class="row">
+      <div class="col-7">
+        <h2 class="mt-4">Compress image</h2>
+        <p>Uploade an image [.png, .jpg, .bmp...], select a threshold value and download the result.</p>
+        <div class="container themed-container">
+          <form>
+              <input type="file" class="form-control" id="file_compression" oninput="update_button_compression()"><br>
+              <label class="form-label">Threshold [0-255]:</label>
+              <input type="number" class="form-control" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="number_thr">
+              <input type="range" class="form-range" min="0" max="255" oninput="update_thr(this.value); update_button_compression()" id="range_thr">
+              <button type="button" class="btn btn-primary" onclick="compress()" id="button_compression">Compress</button>
+          </form>
+        </div>
+        <div id="dyn_cr">
+          <div id="dyn_cr_template" class="container themed-container" style="display: None;">
+            <button type="button" class="btn btn-danger" onclick="remove(this)">X</button>
+            <button type="button" class="btn btn-success" onclick="download(this)" style="margin: 10px;">Download</button>
+            <label>fn</label>
+            <div class="container code-container">stdout</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-5">
+        <h2 class="mt-4">Decompress image</h2>
+        <p>Uploade an image [.dci] and download the result.</p>
+        <div class="container themed-container">
+          <form>
+            <input type="file" class="form-control" id="file_decompression" oninput="update_button_decompression()"><br>
+            <button type="button" class="btn btn-primary" onclick="decompress()" id="button_decompression">Decompress</button>
+          </form>
+        </div>
+        <div id="dyn_dr">
+          <div id="dyn_dr_template" class="container themed-container" style="display: None;">
+            <button type="button" class="btn btn-danger" onclick="remove(this)">X</button>
+            <button type="button" class="btn btn-success" onclick="download(this)" style="margin: 10px;">Download</button>
+            <label>fn</label>
+            <div class="container code-container">stdout</div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <hr>
-
-    <h2 class="mt-4">Decompress image</h2>
-    <p>Uploade an image [.dci] and download the result.</p>
-    <div class="container themed-container">
-      <form>
-        <input type="file" class="form-control" id="file_decompression" oninput="update_button_decompression()"><br>
-        <button type="button" class="btn btn-primary" onclick="decompress()" id="button_decompression">Decompress</button>
-      </form>
-    </div>
-
   </body>
 </html>

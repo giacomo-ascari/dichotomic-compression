@@ -99,11 +99,12 @@ router.post("/compress", async (req: express.Request, res: express.Response) => 
     try {
         let input = await receive(dir, req, res);
         let path = `${dir}/${input}`;
-        let proc = child.execFileSync(bin, ["-c", "-f", path, "-t", thr]);
+        let proc = child.execFileSync(bin, ["-c", "-f", path, "-t", thr, "-v"]);
         let output = `${input}.dci`;
         let result = {
-            fn: output,
-            cr: child.execFileSync("./get-cr.sh", [`${dir}/${output}`, path]).toString()
+            stdout: proc.toString(),
+            fn: output
+            //cr: child.execFileSync("./get-cr.sh", [`${dir}/${output}`, path]).toString()
         }
         res.status(200).send(result);
     } catch(e) {
@@ -119,8 +120,11 @@ router.post("/decompress", async (req: express.Request, res: express.Response) =
     try {
         let filename = await receive(dir, req, res);
         let path = `${dir}/${filename}`;
-        let proc = child.execFileSync(bin, ["-d", "-f", `${path}`]);
-        let result = `${filename}.png`
+        let proc = child.execFileSync(bin, ["-d", "-f", `${path}`, "-v"]);
+        let result = {
+            stdout: proc.toString(),
+            fn: `${filename}.png`
+        }
         res.status(200).send(result);
     } catch(e) {
         log("worker", `error\n\t${e}`, "e");
@@ -134,7 +138,7 @@ router.get("/retrieve", async (req: express.Request, res: express.Response) => {
     let filename = req.query["fn"] ? req.query["fn"] as unknown as string : "63";
     try {
         let path = `${dir}/${filename}`;
-        res.status(200).sendFile(path, {root: "/"});
+        res.status(200).sendFile(path, {root: "./"});
         log("worker", `sending ${path}`, "d");
     } catch {
         res.status(500).send("something");
