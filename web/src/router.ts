@@ -138,7 +138,7 @@ router.get("/retrieve", async (req: express.Request, res: express.Response) => {
     let filename = req.query["fn"] ? req.query["fn"] as unknown as string : "63";
     try {
         let path = `${dir}/${filename}`;
-        res.status(200).sendFile(path, {root: "./"});
+        res.status(200).sendFile(path/*, {root: "./"}*/);
         log("worker", `sending ${path}`, "d");
     } catch {
         res.status(500).send("something");

@@ -22,7 +22,7 @@
 .code-container {
     white-space: pre-wrap;
     padding: .75rem;
-    background-color: #ddd;
-    border: 1px solid #bbb;
+    background-color: #eee;
+    border: 1px solid #ccc;
     font-family: courier, monospace;
 }
