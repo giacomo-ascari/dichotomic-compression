@@ -46,7 +46,7 @@
       <div class="col-7">
         <h2 class="mt-4">Compress image</h2>
         <p>Uploade an image [.png, .jpg, .bmp...], select a threshold value and download the result.</p>
-        <div class="container themed-container">
+        <div class="container themed-container-pink">
           <form>
               <input type="file" class="form-control" id="file_compression" oninput="update_button_compression()"><br>
               <label class="form-label">Threshold [0-255]:</label>
@@ -56,7 +56,7 @@
           </form>
         </div>
         <div id="dyn_cr">
-          <div id="dyn_cr_template" class="container themed-container" style="display: None;">
+          <div id="dyn_cr_template" class="container themed-container-pink" style="display: None;">
             <button type="button" class="btn btn-danger" onclick="remove(this)">X</button>
             <button type="button" class="btn btn-success" onclick="download(this)" style="margin: 10px;">Download</button>
             <label>fn</label>
