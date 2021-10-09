@@ -29,6 +29,11 @@ function update_button_decompression() {
     button_decompression.disabled = !(file_decompression.value);
 }
 
+function remove(node) {
+    let parent = node.parentNode;
+    parent.parentNode.removeChild(parent);
+}
+
 function download(node) {
     let filename;
     node.parentNode.childNodes.forEach(elem => {
