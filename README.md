@@ -37,10 +37,13 @@ DCI (dichotmic compression image) is the format chosen to store the compressed i
   - Size/position: number of sectorizations done before getting to the sector itself (1 byte)
   - RGB stored as 3 1-byte channels
   - Final sector "weight": 4 bytes (32 bits)
-- Version 2 (to be implemented in C)
-  - Size/position: number of sectorizations done before getting to the sector itself (7 bits)
-  - RGB stored as 3 7-bits channels
-  - Final sector "weight": 3.5 bytes (28 bits)
+- Version 2 (to be implemented)
+  - Applies the sectorization on the three separate color channels as if they were 3 different images.
+  - Size/position: number of sectorizations done before getting to the sector itself (4 bit)
+  - Maximum resolution 65536x65536
+  - Color stored as 4-bit channel.
+  - Final sector "weight": 1 byte
+  - Approximately 3 times more sectors
 
 ## Usage
 The repository only includes the source and the compilation script. In order to use it, you must first compile the source code with `./compile.sh`.
