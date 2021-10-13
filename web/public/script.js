@@ -69,11 +69,14 @@ function add_dyn(res, mode) {
 
 function compress() {
     let number_thr = document.getElementById("number_thr");
+    let v1_radio = document.getElementById("v1_radio");
+    let v2_radio = document.getElementById("v2_radio");
+    let ver = v1_radio.checked ? 1 : v2_radio.checked ? 2 : 0;
     let file_compression = document.getElementById("file_compression");
     let button = document.getElementById("button_compression");
     button.disabled = true;
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", `${base_url()}/compress?thr=${number_thr.value}`, true);
+    xhr.open("POST", `${base_url()}/compress?thr=${number_thr.value}&ver=${ver}`, true);
     xhr.onload = (e) => {
         if (xhr.status == 200) {
             let res = JSON.parse(xhr.response);

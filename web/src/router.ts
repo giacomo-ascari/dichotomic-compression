@@ -96,15 +96,15 @@ router.post("/compress", async (req: express.Request, res: express.Response) => 
     let dir = process.env.TEMP_DIR as unknown as string;
     let bin = process.env.BIN as unknown as string;
     let thr = req.query["thr"] ? req.query["thr"] as unknown as string : "63";
+    let ver = req.query["ver"] ? req.query["ver"] as unknown as string : "2";
     try {
         let input = await receive(dir, req, res);
         let path = `${dir}/${input}`;
-        let proc = child.execFileSync(bin, ["-c", "-f", path, "-t", thr, "-v"]);
+        let proc = child.execFileSync(bin, ["-c", "-f", path, "-t", thr, "-v", ver, "-V"]);
         let output = `${input}.dci`;
         let result = {
             stdout: proc.toString(),
             fn: output
-            //cr: child.execFileSync("./get-cr.sh", [`${dir}/${output}`, path]).toString()
         }
         res.status(200).send(result);
     } catch(e) {
@@ -120,7 +120,7 @@ router.post("/decompress", async (req: express.Request, res: express.Response) =
     try {
         let filename = await receive(dir, req, res);
         let path = `${dir}/${filename}`;
-        let proc = child.execFileSync(bin, ["-d", "-f", `${path}`, "-v"]);
+        let proc = child.execFileSync(bin, ["-d", "-f", `${path}`, "-V"]);
         let result = {
             stdout: proc.toString(),
             fn: `${filename}.png`

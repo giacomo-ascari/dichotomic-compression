@@ -37,12 +37,11 @@ DCI (dichotmic compression image) is the format chosen to store the compressed i
   - Size/position: number of sectorizations done before getting to the sector itself (1 byte)
   - RGB stored as 3 1-byte channels
   - Final sector "weight": 4 bytes (32 bits)
-- Version 2 (to be implemented)
+- Version 2
   - Applies the sectorization on the three separate color channels as if they were 3 different images.
-  - Size/position: number of sectorizations done before getting to the sector itself (4 bit)
-  - Maximum resolution 65536x65536
-  - Color stored as 4-bit channel.
-  - Final sector "weight": 1 byte
+  - Size/position: number of sectorizations done before getting to the sector itself (1 byte)
+  - Color stored as 8-bit channel.
+  - Final sector "weight": 2 bytes (16 bits)
   - Approximately 3 times more sectors
 
 ## Usage
@@ -55,8 +54,9 @@ Required
 
 Not required
 - ` -t THRESHOLD`: specifies compression threshold
-- ` -v `: verbose
+- ` -v VERSION`: specifies used version (default 2)
+- ` -V `: verbose
 
 ### Examples
-- ` ./dc_core -c -f ../examples/lines.png -t 30 -v ` Compression (verbose, with custom threshold)
-- ` ./dc_core -d -f ../examples/lines.png.dci -v ` Decompression (verbose)
+- ` ./dc_core -c -f ../examples/lines.png -t 30 -V ` Compression (verbose, with custom threshold)
+- ` ./dc_core -d -f ../examples/lines.png.dci -V ` Decompression (verbose)

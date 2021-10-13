@@ -6,4 +6,3 @@ RUN npm install
 COPY . .
 RUN npm run transpile
 CMD npm run start
-#docker run -p 27001:80 --mount type=tmpfs,destination=/usr/temp dc-web
