@@ -6,7 +6,7 @@ timestamp() {
 
 LOG_FOLDER="log/$(timestamp)"
 ../bin/compile.sh
-THRS=( 15 31 47 63 79 95 111 127 )
+THRS=( 15 31 47 63 79 95 111 127 143 159 175 191 207 223 239) # 254)
 for EXAMPLE_PATH in ../examples/*
 do
   IMAGE=$(basename "$EXAMPLE_PATH")
