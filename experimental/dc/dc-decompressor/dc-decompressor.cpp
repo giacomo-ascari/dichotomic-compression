@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <vector>
+#include <chrono>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "../stb/stb_image_write.h"
@@ -16,12 +17,15 @@ dc_decompressor::dc_decompressor(string _input, string _output, bool _verbose): 
 dc_decompressor::~dc_decompressor() { }
 
 void dc_decompressor::decompress() {
+    
+    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+
     if (verbose) cout << "[DECOMPRESS] Input:" << input << endl;
     if (verbose) cout << "[DECOMPRESS] Output:" << output << endl;
 
     if (verbose) cout << "[DECOMPRESS] Deserialize... ";
     _deserialize();
-    int multiplier;
+    size_t multiplier;
     if (verbose) multiplier = version == 1 ? 4 : version == 2 ? 2 : 0;
     if (verbose) cout << "DONE (" << (sectors_count * multiplier + 10) / 1000 << " KB, version:" << version << ", thr:" << thr << ")" << endl;
 
@@ -38,7 +42,8 @@ void dc_decompressor::decompress() {
     _pack();
     if (verbose) cout << "DONE (" << pixel_matrix.get_width() << "x" << pixel_matrix.get_height() << ")" << endl;
     
-    if (verbose) printf("[DECOMPRESS] Finished\n");
+    chrono::steady_clock::time_point end = chrono::steady_clock::now();
+    if (verbose) cout << "[DECOMPRESS] Finished in " << chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms" << endl;
 }
 
 void dc_decompressor::_deserialize() {
@@ -48,9 +53,8 @@ void dc_decompressor::_deserialize() {
         exit(1);
     }
     unsigned char b[8], buffer[1024];
-    int readable, count = 0;
+    size_t i, readable, count = 0;
     uint32_t _w, _h;
-    int i;
     if (read(fd, b, 2) == 2) {
         version = b[0];
         thr = b[1];
@@ -115,20 +119,20 @@ void dc_decompressor::_deserialize() {
 }
 
 void dc_decompressor::_render(bool channel_sensitive) {
-    int w = pixel_matrix.get_width();
-    int h = pixel_matrix.get_height();
+    size_t w = pixel_matrix.get_width();
+    size_t h = pixel_matrix.get_height();
     unsigned char *mat = new unsigned char[w * h];
     dc_corners cor;
-    int dx, dy, mid;
+    size_t dx, dy, mid;
     dc_channels channel = RED;
     for (auto light_iter = l_sectors.begin(); light_iter!=l_sectors.end(); ) {
-        for (int i = 0; i < w * h; i++) mat[i] = 0;
-        for (int y = 0; y < h; y++) {
-            for (int x = 0; x < w; x++) {
+        for (size_t i = 0; i < w * h; i++) mat[i] = 0;
+        for (size_t y = 0; y < h; y++) {
+            for (size_t x = 0; x < w; x++) {
                 if (mat[ix(x, y, w)] == 0) {
                     cor.x0 = 0; cor.y0 = 0;
                     cor.x1 = w; cor.y1 = h;
-                    for (int i = 0; i < light_iter->splits; i++) {
+                    for (size_t i = 0; i < light_iter->splits; i++) {
                         dx = cor.x1 - cor.x0;
                         dy = cor.y1 - cor.y0;
                         if (dx > dy) {
@@ -162,9 +166,9 @@ void dc_decompressor::_pack() {
     for (size_t y = 0; y < h; y++) {
         for (size_t x = 0; x < w; x++) {
             dc_pixel &pix = pixel_matrix.get_pixels()[ix(x, y, w)];
+            data[i++] = pix.get_r();
             data[i++] = pix.get_g();
             data[i++] = pix.get_b();
-            data[i++] = pix.get_r();
         }
     }
     stbi_write_png(output.c_str(), w, h, 3, data, 0); // todo: see why it takes so long

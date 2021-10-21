@@ -15,14 +15,14 @@ dc_pixel_matrix::~dc_pixel_matrix() {
     delete[] pixels;
 }
 
-int dc_pixel_matrix::get_delta(dc_corners &cor, dc_channels channel) {
+size_t dc_pixel_matrix::get_delta(dc_corners &cor, dc_channels channel) {
     dc_pixel max_pix(0, 0, 0);
     dc_pixel min_pix(255, 255, 255);
-    int delta, mx = 0, mn = 255;
+    size_t delta, mx = 0, mn = 255;
     for (size_t y = cor.y0; y < cor.y1; y++) {
         for (size_t x = cor.x0; x < cor.x1; x++) {
             dc_pixel *current = &pixels[ix(x, y, width)];
-            int cur_channel;
+            size_t cur_channel;
             if (channel == NONE) {
                 max_pix.set_r(max(current->get_r(), max_pix.get_r()));
                 max_pix.set_g(max(current->get_g(), max_pix.get_g()));
@@ -48,7 +48,7 @@ int dc_pixel_matrix::get_delta(dc_corners &cor, dc_channels channel) {
 }
 
 void dc_pixel_matrix::get_average(dc_corners &cor, dc_heavy_sector &h_sector, dc_channels channel) {
-    int denom = (cor.x1 - cor.x0) * (cor.y1 - cor.y0);
+    size_t denom = (cor.x1 - cor.x0) * (cor.y1 - cor.y0);
     double r = 0., g = 0., b = 0., val = 0.;
     for (size_t y = cor.y0; y < cor.y1; y++) {
         for (size_t x = cor.x0; x < cor.x1; x++) {
@@ -82,5 +82,19 @@ void dc_pixel_matrix::draw_n_occupy(dc_corners &cor, unsigned char *mat, dc_ligh
                 pixels[i].increase_channel(l_sector.value, channel);
             }
         }
+    }
+}
+
+void dc_pixel_matrix::print() {
+    size_t i;
+    for (size_t y = 0; y < height; y++) {
+        cout << "| ";
+        for (size_t x = 0; x < width; x++) {
+            i = ix(x, y, width);
+            cout << hex << (int)pixels[i].get_r();
+            cout << hex << (int)pixels[i].get_g();
+            cout << hex << (int)pixels[i].get_b() << " | ";
+        }
+        cout << endl;
     }
 }

@@ -1,5 +1,6 @@
 #include <string>
 #include <iostream>
+#include <chrono>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../stb/stb_image.h"
@@ -8,7 +9,7 @@
 
 using namespace std;
 
-dc_compressor::dc_compressor(string _input, string _output, bool _verbose, int _version, int _thr): dc(_input, _output, _verbose) {
+dc_compressor::dc_compressor(string _input, string _output, bool _verbose, size_t _version, size_t _thr): dc(_input, _output, _verbose) {
     version = _version;
     thr = _thr;
 }
@@ -16,6 +17,9 @@ dc_compressor::dc_compressor(string _input, string _output, bool _verbose, int _
 dc_compressor::~dc_compressor() { }
 
 void dc_compressor::compress() {
+
+    chrono::steady_clock::time_point begin = chrono::steady_clock::now();
+
     if (verbose) cout << "[COMPRESS] Input: " << input << endl;
     if (verbose) cout << "[COMPRESS] Output: " << output << endl;
     if (verbose) cout << "[COMPRESS] Thr: " << thr << ", version: " << version << endl;
@@ -49,19 +53,24 @@ void dc_compressor::compress() {
         default: break;
     }
     size_t filesize;
-    int multiplier;
+    size_t multiplier;
     if (verbose) multiplier = version == 1 ? 4 : version == 2 ? 2 : 0;
     if (verbose) filesize = sectors_count * multiplier + 10;
     if (verbose) cout << "DONE (" << filesize / 1000 << " KB)" << endl;
 
     size_t comp_ratio;
     if (verbose) comp_ratio = filesize * 100 / input_filesize;
-    if (verbose) cout << "[COMPRESS] Finished (CR " << comp_ratio << ")\n";
+    chrono::steady_clock::time_point end = chrono::steady_clock::now();
+    if (verbose) cout << "[COMPRESS] Finished in " << chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "ms (CR " << comp_ratio << ")\n";
 }
 
 void dc_compressor::_unpack(bool channel_sensitive) {
-    int width, height, comp;
-    unsigned char *data = stbi_load(input.c_str(), &width, &height, &comp, 3);
+    int _width, _height, _comp;
+    size_t width, height, comp;
+    unsigned char *data = stbi_load(input.c_str(), &_width, &_height, &_comp, 3);
+    width = _width;
+    height = _height;
+    comp = _comp;
     if (!data) {
         cerr << "Cannot open file" << endl;
         exit(1);
@@ -75,14 +84,14 @@ void dc_compressor::_unpack(bool channel_sensitive) {
     pixel_matrix.set_width(width);
     pixel_matrix.set_height(height);
     pixel_matrix.set_pixels(new dc_pixel[width * height]);
-    int j = 0;
-    for (int i = 0; i < width * height; i++) {
+    size_t j = 0;
+    for (size_t i = 0; i < width * height; i++) {
         pixel_matrix.get_pixels()[i].set_r(data[j++]);
         pixel_matrix.get_pixels()[i].set_g(data[j++]);
         pixel_matrix.get_pixels()[i].set_b(data[j++]);
     }
     stbi_image_free(data);
-    int length;
+    size_t length;
     if (channel_sensitive) {
         length = width * height * 3;
     } else {
@@ -90,12 +99,12 @@ void dc_compressor::_unpack(bool channel_sensitive) {
     }
 }
 
-void dc_compressor::_sectorize(dc_corners cor, int splits, dc_channels channel) {
-    int delta = pixel_matrix.get_delta(cor, channel);
-    int dx = cor.x1 - cor.x0;
-    int dy = cor.y1 - cor.y0;
-    int area = dx * dy;
-    int mid = 0;
+void dc_compressor::_sectorize(dc_corners cor, size_t splits, dc_channels channel) {
+    size_t delta = pixel_matrix.get_delta(cor, channel);
+    size_t dx = cor.x1 - cor.x0;
+    size_t dy = cor.y1 - cor.y0;
+    size_t area = dx * dy;
+    size_t mid = 0;
     dc_corners temp = {0, 0, 0, 0};
     dc_heavy_sector h_sector;
     if (area > 1 && delta > thr) {
@@ -137,14 +146,14 @@ void dc_compressor::_serialize(bool channel_sensitive) {
     }
     fprintf(file, "%c", (unsigned char)version);
     fprintf(file, "%c", (unsigned char)thr);
-    int w = pixel_matrix.get_width();
-    int h = pixel_matrix.get_height();
+    size_t w = pixel_matrix.get_width();
+    size_t h = pixel_matrix.get_height();
     unsigned char b[4];
     b[0] = (w >> 24) & 0xFF; b[1] = (w >> 16) & 0xFF;  b[2] = (w >> 8) & 0xFF; b[3] = w & 0xFF;
     fprintf(file, "%c%c%c%c", b[3], b[2], b[1], b[0]);
     b[0] = (h >> 24) & 0xFF; b[1] = (h >> 16) & 0xFF;  b[2] = (h >> 8) & 0xFF; b[3] = h & 0xFF;
     fprintf(file, "%c%c%c%c", b[3], b[2], b[1], b[0]);
-    int length = w * h;
+    size_t length = w * h;
     dc_pixel *pp;
     dc_heavy_sector *hp;
     if (channel_sensitive) {

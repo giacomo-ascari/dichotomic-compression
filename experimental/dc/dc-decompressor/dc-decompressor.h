@@ -14,7 +14,6 @@ class dc_decompressor: public dc {
         ~dc_decompressor();
         void decompress();
     private:
-        int input_filesize;
         void _deserialize();
         void _render(bool channel_sensitive);
         void _pack();

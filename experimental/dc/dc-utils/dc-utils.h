@@ -3,15 +3,15 @@
 
 #include <string>
 
-int ix(int x, int y, int width);
+size_t ix(size_t x, size_t y, size_t width);
 
-int middle(int a, int b);
+size_t middle(size_t a, size_t b);
 
 enum dc_channels { RED=0, GREEN=1, BLUE=2, NONE=3 };
 
 typedef struct _dc_corners {
-    int x0, y0;
-    int x1, y1;
+    size_t x0, y0;
+    size_t x1, y1;
 } dc_corners;
 
 class dc_pixel {
@@ -28,8 +28,8 @@ class dc_pixel {
         void set_b(unsigned char value) { b = value; }
         unsigned char get_channel(dc_channels channel);
         unsigned char get_r() { return r; }
-        unsigned char get_g() { return r; }
-        unsigned char get_b() { return r; }
+        unsigned char get_g() { return g; }
+        unsigned char get_b() { return b; }
     private:
         unsigned char r;
         unsigned char g;
@@ -54,18 +54,19 @@ class dc_pixel_matrix {
         dc_pixel_matrix();
         ~dc_pixel_matrix();
         void set_pixels(dc_pixel *value) { pixels = value; }
-        void set_width(int value) { width = value; }
-        void set_height(int value) { height = value; }
-        int get_delta(dc_corners &cor, dc_channels channel);
+        void set_width(size_t value) { width = value; }
+        void set_height(size_t value) { height = value; }
+        size_t get_delta(dc_corners &cor, dc_channels channel);
         void get_average(dc_corners &cor, dc_heavy_sector &h_sector, dc_channels channel);
         dc_pixel *get_pixels() { return pixels; }
-        int get_width() { return width; }
-        int get_height() { return height; }
+        size_t get_width() { return width; }
+        size_t get_height() { return height; }
         void draw_n_occupy(dc_corners &cor, unsigned char *mat, dc_light_sector &l_sector, dc_channels channel);
+        void print();
     private:
         dc_pixel *pixels;
-        int width;
-        int height;
+        size_t width;
+        size_t height;
 };
 
 #endif

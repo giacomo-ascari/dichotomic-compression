@@ -14,6 +14,7 @@ dc::dc(string _input, string _output, bool _verbose) {
     version = 0;
     thr = 0;
     sectors_count = 0;
+    input_filesize = 0;
 }
 
 dc::~dc() { }

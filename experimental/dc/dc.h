@@ -16,11 +16,12 @@ class dc {
         ~dc();
     protected:
         bool verbose;
-        int version;
-        int thr;
+        size_t input_filesize;
+        size_t version;
+        size_t thr;
         string input;
         string output;
-        int sectors_count;
+        size_t sectors_count;
         dc_pixel_matrix pixel_matrix;
         map<size_t, dc_heavy_sector> h_sectors;
         vector<dc_light_sector> l_sectors;

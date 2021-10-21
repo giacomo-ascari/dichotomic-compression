@@ -5,11 +5,11 @@
 
 using namespace std;
 
-int ix(int x, int y, int width) {
+size_t ix(size_t x, size_t y, size_t width) {
     return x + (y * width);
 }
 
-int middle(int a, int b) {
+size_t middle(size_t a, size_t b) {
     return a + (b - a) / 2;
 }
 
