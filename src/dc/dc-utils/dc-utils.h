@@ -1,13 +1,15 @@
 #ifndef _DC_UTILS_H
 #define _DC_UTILS_H
 
-#include <string>
+#include <bitset>
 
 size_t ix(size_t x, size_t y, size_t width);
 
 size_t middle(size_t a, size_t b);
 
 enum dc_channels { RED=0, GREEN=1, BLUE=2, NONE=3 };
+
+enum dc_significant_bits { LSB=0, MSB=1 };
 
 typedef struct _dc_corners {
     size_t x0, y0;
@@ -68,5 +70,56 @@ class dc_pixel_matrix {
         size_t width;
         size_t height;
 };
+
+/*class dc_writer {
+    public:
+        dc_writer(FILE *_file);
+        ~dc_writer();
+        void write_to_buffer(unsigned char value, unsigned char bits, dc_significant_bits sb);
+        void flush_buffer();
+    private:
+        size_t count;
+        std::bitset<32> buffer;
+        void write();
+        FILE *file;
+};
+
+dc_writer::dc_writer(FILE *_file) {
+    file = _file;
+    count = 0;
+    buffer = bitset<32>(0);
+}
+
+// dc-writer.cpp
+
+void dc_writer::write_to_buffer(unsigned char value, unsigned char bits, dc_significant_bits sb) {
+    bitset<32> temp(value);
+    if (sb == MSB) {
+        temp >>= (8-bits);
+        temp <<= (32 - bits - count);
+    } else {
+        temp <<= (32-bits);
+        temp >>= (count);
+    }
+    buffer |= temp; 
+    count += bits;
+    if (!count % 8) {
+        flush_buffer();
+    }
+}
+
+void dc_writer::flush_buffer() {
+    bitset<32> temp;
+    for (size_t i = 0; i < count / 8; i++) {
+        temp = bitset<32>(0);
+        temp |= buffer;
+        temp >>= (count - (i+1)*8);
+        fprintf(file, "%c", temp.to_ulong());
+        for (size_t j = 0; j < 8; j++) {
+            buffer.reset(i*8+j);
+        }
+    }
+    buffer = bitset<32>(0);
+}*/
 
 #endif
