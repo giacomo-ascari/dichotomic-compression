@@ -1,5 +1,6 @@
 # Dichotomic Compression
 Image compression algorithm, developed for research and educational purposes.
+Give it a shot, on [asky.hopto.org](https://asky.hopto.org/dc)!
 
 ## Overview
 The dichotomic compression aims to minimize the size of a raster image by dinamically reducing the resolution. It is done by aggregating regions of homogeneous pixels into a single sector. The similarity of the region is regulated by the threshold value (in a range between 0-255).
@@ -46,6 +47,11 @@ DCI (dichotmic compression image) is the format chosen to store the compressed i
 
 ## Usage
 The repository only includes the source and the compilation script. In order to use it, you must first compile the source code with `./compile.sh`.
+
+### Website - [https://asky.hopto.org/dc](https://asky.hopto.org/dc)
+In order to improve testing and usability of the dichotomic compression, a custom web application has been deployed on a self-hosted server. You can find the code in the `./web` folder. The website allows the user to:
+- compress any image, select version and threshold, take a look at the program output and download the `.dci` file
+- decompress any `.dci` file, take a look at the program output and download the decompressed image
 
 ### Command line arguments
 Required
